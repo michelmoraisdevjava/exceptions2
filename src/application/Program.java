@@ -1,19 +1,19 @@
 package application;
 
+import java.text.ParseException;
 import java.util.Locale;
 import java.util.Scanner;
 
 import model.entities.Account;
-import model.exceptions.OperationException;
+import model.exceptions.DomainException;
 
 public class Program {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		
 		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
 		
-		try {
 		System.out.println("Enter account data");
 		System.out.print("Number: ");
 		int number = sc.nextInt();
@@ -21,25 +21,23 @@ public class Program {
 		sc.nextLine();
 		String holder = sc.nextLine();
 		System.out.print("Initial balance: ");
-		double initialBalance = sc.nextDouble();
+		double balance = sc.nextDouble();
 		System.out.print("Withdraw limit: ");
 		double withdrawLimit = sc.nextDouble();
 		
-		Account account = new Account(number, holder, initialBalance, withdrawLimit);
+		Account acc = new Account(number, holder, balance, withdrawLimit);
+		
 		System.out.println();
-		System.out.print("Enter amount for withdraw: "); 
-		double withdrawal = sc.nextDouble();
-		account.withdraw(withdrawal);
-		System.out.println("New balance: " + account.getBalance());
+		System.out.print("Enter amount for withdraw: ");
+		double amount = sc.nextDouble();
+		try {
+			acc.withdraw(amount);
+			System.out.println("New balance: " + String.format("%.2f", acc.getBalance()));
 		}
-		catch(OperationException e) {
+		catch (DomainException e) {
 			System.out.println("Withdraw error: " + e.getMessage());
-		}
-		catch(RuntimeException e) {
-			System.out.println("Unexpected error");
 		}
 		
 		sc.close();
 	}
-
 }
